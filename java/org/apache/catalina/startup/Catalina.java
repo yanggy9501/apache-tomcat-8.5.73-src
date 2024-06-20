@@ -634,8 +634,9 @@ public class Catalina {
         // Stream redirection
         initStreams();
 
-        // Start the new server  初始化Server
+        // Start the new server 初始化Server
         try {
+            // 模板模式：每个节点自己完成的任务后，会接着调用子节点（如果有的话）的同样的方法，引起链式反应。
             getServer().init();
         } catch (LifecycleException e) {
             if (Boolean.getBoolean("org.apache.catalina.startup.EXIT_ON_INIT_FAILURE")) {

@@ -888,7 +888,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase implements Contai
 
     @Override
     protected void initInternal() throws LifecycleException {
-        // web 应用的启动停止 在专门的线程池中完成
+        // web 应用的启动停止在专门的线程池中完成
         BlockingQueue<Runnable> startStopQueue = new LinkedBlockingQueue<>();
         // core threads= startStopThreads = 1(默认)
         startStopExecutor = new ThreadPoolExecutor(

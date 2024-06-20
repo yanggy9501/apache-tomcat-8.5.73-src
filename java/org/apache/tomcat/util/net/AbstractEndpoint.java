@@ -119,6 +119,7 @@ public abstract class AbstractEndpoint<S> {
         UNBOUND, BOUND_ON_INIT, BOUND_ON_START, SOCKET_CLOSED_ON_STOP
     }
 
+    // Acceptor 用于监听 Socket 连接请求
     public abstract static class Acceptor implements Runnable {
         public enum AcceptorState {
             NEW, RUNNING, PAUSED, ENDED

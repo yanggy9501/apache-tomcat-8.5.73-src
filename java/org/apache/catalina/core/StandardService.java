@@ -546,7 +546,8 @@ public class StandardService extends LifecycleMBeanBase implements Service {
         synchronized (connectorsLock) {
             for (Connector connector : connectors) {
                 try {
-                    connector.init();// connector的初始化-->protocolHandler和adapter 初始化完成
+                    // connector 的初始化--> protocolHandler 和 adapter 初始化完成
+                    connector.init();
                 } catch (Exception e) {
                     String message = sm.getString(
                             "standardService.connector.initFailed", connector);

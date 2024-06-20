@@ -1042,7 +1042,7 @@ public class Connector extends LifecycleMBeanBase  {
         super.initInternal();
 
         // Initialize adapter
-        adapter = new CoyoteAdapter(this);//创建apapter组件
+        adapter = new CoyoteAdapter(this);// 创建adapter组件
         protocolHandler.setAdapter(adapter);// protocolHandler=org.apache.coyote.http11.Http11NioProtocol
 
         // Make sure parseBodyMethodsSet has a default

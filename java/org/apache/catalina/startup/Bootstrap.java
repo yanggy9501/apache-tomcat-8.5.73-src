@@ -283,7 +283,7 @@ public final class Bootstrap {
      * @throws Exception Fatal initialization error
      */
     public void init() throws Exception {
-        // 初始化 ClassLoader  common,catalina,shared
+        // 初始化 ClassLoader common, catalina, shared
         initClassLoaders();
         // tomcat 启动线程的上下文类加载器是: catalina classloader
         Thread.currentThread().setContextClassLoader(catalinaLoader);
@@ -294,8 +294,10 @@ public final class Bootstrap {
         if (log.isDebugEnabled()) {
             log.debug("Loading startup class");
         }
-        Class<?> startupClass = catalinaLoader.loadClass("org.apache.catalina.startup.Catalina");//用Cataina classloader去加载Catalina
-        Object startupInstance = startupClass.getConstructor().newInstance();// 构建 Catalina对象
+        // 用 Catalina classloader去加载Catalina
+        Class<?> startupClass = catalinaLoader.loadClass("org.apache.catalina.startup.Catalina");
+        // 构建 Catalina对象
+        Object startupInstance = startupClass.getConstructor().newInstance();
 
         // Set the shared extensions class loader
         if (log.isDebugEnabled()) {
@@ -308,8 +310,9 @@ public final class Bootstrap {
         paramValues[0] = sharedLoader;
         Method method =
             startupInstance.getClass().getMethod(methodName, paramTypes);
-        method.invoke(startupInstance, paramValues);//调用 Catalina的 setParentClassLoader 方法,将parentClassLoader设置为 shared classloader
-        // 这里为什么要基于反射调用Catalina的相关方法,后面在Bootstrap中的其他对方也都是基于反射调用的,为什么?
+        //调用 Catalina的 setParentClassLoader 方法,将parentClassLoader设置为 shared classloader
+        method.invoke(startupInstance, paramValues);
+        // 这里为什么要基于反射调用Catalina的相关方法，后面在Bootstrap中的其他对方也都是基于反射调用的，为什么?
         // https://juejin.cn/post/6844903896331075592#heading-8
         catalinaDaemon = startupInstance; // org.apache.catalina.startup.Catalina
     }
@@ -333,8 +336,9 @@ public final class Bootstrap {
             param = new Object[1];
             param[0] = arguments;
         }
+        // 执行 Catalina 的 load 方法
         Method method =
-            catalinaDaemon.getClass().getMethod(methodName, paramTypes);// 执行 Catalina 的 load 方法
+            catalinaDaemon.getClass().getMethod(methodName, paramTypes);
         if (log.isDebugEnabled()) {
             log.debug("Calling startup class " + method);
         }
