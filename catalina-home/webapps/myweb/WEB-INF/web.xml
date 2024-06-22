@@ -30,7 +30,7 @@
 
   <servlet>
     <servlet-name>hello</servlet-name>
-    <servlet-class>com.example.servelt.HelloServelt</servlet-class>
+    <servlet-class>com.example.servelt.HelloServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>

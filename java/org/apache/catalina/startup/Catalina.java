@@ -606,7 +606,8 @@ public class Catalina {
             }
 
             try {
-                inputSource.setByteStream(inputStream);//
+                inputSource.setByteStream(inputStream);
+                // 将 catalina push 到 server.xml 的解析器中的 stack 中
                 digester.push(this);
                 digester.parse(inputSource);// parse conf/server.xml
             } catch (SAXParseException spe) {

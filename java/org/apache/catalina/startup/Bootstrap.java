@@ -131,7 +131,7 @@ public final class Bootstrap {
 
 
     /**
-     * Daemon reference.
+     * Daemon reference.(Catalina 实例对象)
      */
     private Object catalinaDaemon = null;
 
@@ -482,7 +482,7 @@ public final class Bootstrap {
                 // Don't set daemon until init() has completed
                 Bootstrap bootstrap = new Bootstrap();
                 try {
-                    bootstrap.init(); // 初始化类加载器,创建Catalina
+                    bootstrap.init(); // 初始化类加载器，创建Catalina
                 } catch (Throwable t) {
                     handleThrowable(t);
                     t.printStackTrace();
