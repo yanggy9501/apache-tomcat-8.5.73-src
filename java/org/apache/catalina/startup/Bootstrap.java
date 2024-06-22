@@ -475,6 +475,13 @@ public final class Bootstrap {
      *
      * @param args Command line arguments to be processed
      */
+    /*
+    jvm 参数
+    -Dcatalina.home=/xxx/apache-tomcat-8.5.73-src/catalina-home
+    -Dcatalina.base=/xxx/apache-tomcat-8.5.73-src/catalina-home
+    -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
+    -Dfile.encoding=UTF-8
+     */
     public static void main(String args[]) {
 
         synchronized (daemonLock) {
