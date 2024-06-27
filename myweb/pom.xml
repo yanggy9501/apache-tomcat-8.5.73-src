@@ -69,6 +69,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>apache-tomcat-8.5.73-src</artifactId>
+      <version>8.5</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
 </project>

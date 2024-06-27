@@ -85,7 +85,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
     private volatile CountDownLatch stopLatch = null;
 
     /**
-     * Cache for poller events
+     * Cache for poller events. IO 事件缓存
      */
     private SynchronizedStack<PollerEvent> eventCache;
 
@@ -287,7 +287,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
             // eventCache 默认 128 最大 500 (event 指的是IO事件)
             eventCache = new SynchronizedStack<>(SynchronizedStack.DEFAULT_SIZE,
                 socketProperties.getEventCache());
-            // Bytebuffer cache, each channel holds a set of buffers ; nioChannel 默认 128 最大 500
+            // Bytebuffer cache, each channel holds a set of buffers; nioChannel 默认 128 最大 500
             nioChannels = new SynchronizedStack<>(SynchronizedStack.DEFAULT_SIZE,
                 socketProperties.getBufferPool());
 
@@ -298,10 +298,12 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
             //初始化 连接数限制 (LimitLatch) maxConnections = 10000;
             initializeConnectionLatch();
 
-            // Start poller threads  启动 IO线程 IO线程，最少2个,正常情况下 = availableProcessors()
+            // Start poller threads
+            // 启动 IO线程，最少2个，正常情况下 = availableProcessors()
             pollers = new Poller[getPollerThreadCount()];
             for (int i = 0; i < pollers.length; i++) {
                 pollers[i] = new Poller();
+                // 启动线程 selector 监听 Poller#run
                 Thread pollerThread = new Thread(pollers[i], getName() + "-ClientPoller-" + i);
                 pollerThread.setPriority(threadPriority);
                 pollerThread.setDaemon(true);
@@ -546,7 +548,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
                     SocketChannel socket = null;
                     try {
                         // Accept the next incoming connection from the server
-                        // socket 接收连接
+                        // ServerSocketChannel 接收连接，获取 SocketChannel
                         socket = serverSock.accept();
                     } catch (IOException ioe) {
                         // We didn't get a socket
@@ -566,7 +568,8 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
                     // Configure the socket 配置新接收的客户端连接 socket
                     if (running && !paused) {
                         // setSocketOptions() will hand the socket off to an appropriate processor if successful
-                        // setSocketOptions() 方法 将客户端连接交给合适的 processor 处理
+                        // setSocketOptions() 方法将客户端连接交给合适的 processor 处理
+                        // @see Poller#run
                         if (!setSocketOptions(socket)) {
                             closeSocket(socket);
                         }
@@ -706,13 +709,15 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
     }
 
     /**
-     * Poller class. Poller 本质是一个 Selector，它内部维护一个 Queue,每个Poller在单独的线程中运行 ，即IO线程
+     * Poller class.
+     * Poller 本质是一个 Selector，它内部维护一个 Queue，每个Poller在单独的线程中运行，即IO线程
      */
     public class Poller implements Runnable {
-
+        // NIO selector
         private Selector selector;
-        private final SynchronizedQueue<PollerEvent> events =
-            new SynchronizedQueue<>();
+
+        // IO 事件同步队列
+        private final SynchronizedQueue<PollerEvent> events = new SynchronizedQueue<>();
 
         private volatile boolean close = false;
         private long nextExpiration = 0;//optimize expiration handling
@@ -746,6 +751,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
         }
 
         private void addEvent(PollerEvent event) {
+            // @see Poller#run
             events.offer(event);
             if (wakeupCounter.incrementAndGet() == 0) {
                 selector.wakeup();
@@ -822,7 +828,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
             } else {
                 r.reset(socket, ka, OP_REGISTER);
             }
-            // 将 PollerEvent 添加到 Polloer的 SynchronizedQueue<PollerEvent> events 队列
+            // 将 PollerEvent 添加到 Poller的 SynchronizedQueue<PollerEvent> events 队列
             addEvent(r);
         }
 
@@ -892,7 +898,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
          * The background thread that adds sockets to the Poller, checks the poller for triggered events and hands the
          * associated socket off to an appropriate processor as events occur.
          *
-         * 轮询检测socket是否有对应事件,事件触发后将socket交给合适匹配的 processor
+         * 轮询检测socket是否有对应事件，事件触发后将socket交给合适匹配的 processor
          */
         @Override
         public void run() {
@@ -975,7 +981,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel> {
                             unreg(sk, attachment, sk.readyOps());
                             boolean closeSocket = false;
                             // Read goes before write
-                            //先 处理读
+                            // 先处理 读
                             if (sk.isReadable()) {
                                 if (!processSocket(attachment, SocketEvent.OPEN_READ, true)) {
                                     closeSocket = true;// 处理失败 closeSocket

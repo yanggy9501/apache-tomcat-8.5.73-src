@@ -601,7 +601,7 @@ public class Http11Processor extends AbstractProcessor {
             if (getErrorState().isIoAllowed()) {
                 try {
                     rp.setStage(org.apache.coyote.Constants.STAGE_SERVICE);
-                    getAdapter().service(request, response); // 调用 Adapter的servie方法,将tomcat的org.apache.coyote.Request/Response适配为Servlet规范的ServeltRequest/ServeltResponse
+                    getAdapter().service(request, response); // 调用 Adapter的 service 方法,将tomcat的org.apache.coyote.Request/Response适配为Servlet规范的ServletRequest/ServletResponse
                     // Handle when the response was committed before a serious
                     // error occurred.  Throwing a ServletException should both
                     // set the status to 500 and set the errorException.

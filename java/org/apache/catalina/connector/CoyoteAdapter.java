@@ -349,7 +349,7 @@ public class CoyoteAdapter implements Adapter {
 
         try {
             // Parse and set Catalina and configuration specific
-            // request parameters    解析数据,将tomcat的req对象中的数据填充到servlet规范的request对象中
+            // request parameters 解析数据，将tomcat的req对象中的数据填充到servlet规范的request对象中
             postParseSuccess = postParseRequest(req, request, res, response);
             if (postParseSuccess) {
                 //check valves if we support async

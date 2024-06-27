@@ -924,7 +924,7 @@ public abstract class AbstractEndpoint<S> {
          *
          *  查看execute方法
          */
-        executor = new ThreadPoolExecutor(getMinSpareThreads(), getMaxThreads(), 60, TimeUnit.SECONDS,taskqueue, tf);
+        executor = new ThreadPoolExecutor(getMinSpareThreads(), getMaxThreads(), 60, TimeUnit.SECONDS, taskqueue, tf);
         taskqueue.setParent( (ThreadPoolExecutor) executor);
     }
 
@@ -1246,8 +1246,9 @@ public abstract class AbstractEndpoint<S> {
 
     protected final void startAcceptorThreads() {
         int count = getAcceptorThreadCount();
+        // 接收连接线程：Acceptor 用于监听 Socket 连接请求
         acceptors = new Acceptor[count];
-        // 默认只需创建一个 Acceptor
+        // 默认只需创建一个 Acceptor 线程监听 connection 并启动线程
         for (int i = 0; i < count; i++) {
             acceptors[i] = createAcceptor();
             String threadName = getName() + "-Acceptor-" + i;

@@ -35,7 +35,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>myServlet</servlet-name>
-    <url-pattern>/hello</url-pattern>
+    <url-pattern>/myServlet</url-pattern>
   </servlet-mapping>
 
   <filter>

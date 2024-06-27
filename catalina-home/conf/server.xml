@@ -167,7 +167,7 @@
                pattern="%h %l %u %t &quot;%r&quot; %s %b" />
 
 
-        <!--<Context path="myweb" docBase="C:\developer\WorkSpace\apache-tomcat-8.5.73-src\myweb"></Context>-->
+        <!--<Context path="myweb" docBase="C:\xxx\apache-tomcat-8.5.73-src\myweb"></Context>-->
       </Host>
     </Engine>
   </Service>
