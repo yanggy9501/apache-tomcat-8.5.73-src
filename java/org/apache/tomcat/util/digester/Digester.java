@@ -58,6 +58,7 @@ import java.util.*;
  * the support of XML schema. You need Xerces 2.1/2.3 and up to make
  * this class working with XML schema</p>
  */
+// Java解析xml主要由DOM4J（一次读取到内存并解析）、SAX（一次解析一部分），digester本身采用SAX的解析方式，并提供了一层包装
 public class Digester extends DefaultHandler2 {
 
     // ---------------------------------------------------------- Static Fields

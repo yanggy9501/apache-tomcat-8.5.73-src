@@ -83,6 +83,7 @@ public class Catalina {
     /**
      * Use await.
      */
+    // 用于设置Server启动完成后是否进入等待状态的标志，如果为true则进入，否则不进入。
     protected boolean await = false;
 
     /**
@@ -528,6 +529,7 @@ public class Catalina {
     /**
      * Start a new server instance. 加载配置并启动Server
      */
+    // Catalina的load方法根据conf/server.xml创建了Server对象，并赋值给server属性（具体是通过开源项目Digester完成的），然后调用了server的init方法。
     public void load() {
 
         if (loaded) {
@@ -543,6 +545,7 @@ public class Catalina {
         initNaming();
 
         // Create and execute our Digester
+        // 创建并执行Digester来读取conf/server.xml文件
         Digester digester = createStartDigester();
 
         InputSource inputSource = null;
@@ -550,7 +553,8 @@ public class Catalina {
         File file = null;
         try {
             try {
-                file = configFile(); // 要解析: conf/server.xml
+                // 默认指定了 conf/server.xml
+                file = configFile();
                 inputStream = new FileInputStream(file);
                 inputSource = new InputSource(file.toURI().toURL().toString());
             } catch (Exception e) {
@@ -607,7 +611,7 @@ public class Catalina {
 
             try {
                 inputSource.setByteStream(inputStream);
-                // 将 catalina push 到 server.xml 的解析器中的 stack 中
+                // 将 catalina push 到 server.xml 的解析器中的 stack 中，解析
                 digester.push(this);
                 digester.parse(inputSource);// parse conf/server.xml
             } catch (SAXParseException spe) {
@@ -720,6 +724,7 @@ public class Catalina {
             }
         }
 
+        // 此处判断 主线程是否await
         if (await) {
             await();// 用 await 方法监听 shutdown 请求
             stop();

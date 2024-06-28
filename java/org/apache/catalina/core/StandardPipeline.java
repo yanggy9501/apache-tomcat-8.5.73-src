@@ -245,6 +245,7 @@ public class StandardPipeline extends LifecycleBase implements Pipeline {
      *
      * @param valve Valve to be distinguished as the basic Valve
      */
+    // 在处理 server.xml 中配置的 Valve 时
     @Override
     public void setBasic(Valve valve) {
 
@@ -349,6 +350,7 @@ public class StandardPipeline extends LifecycleBase implements Pipeline {
             Valve current = first;
             while (current != null) {
                 if (current.getNext() == basic) {
+                    // 组装成链式结构，first + 新增 valve + basicValve
                     current.setNext(valve);
                     valve.setNext(basic);
                     break;

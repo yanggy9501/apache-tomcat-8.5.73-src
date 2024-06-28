@@ -283,7 +283,7 @@ public final class Bootstrap {
      * @throws Exception Fatal initialization error
      */
     public void init() throws Exception {
-        // 初始化 ClassLoader common, catalina, shared
+        // 初始化 ClassLoader: common, server, shared
         initClassLoaders();
         // tomcat 启动线程的上下文类加载器是: catalina classloader
         Thread.currentThread().setContextClassLoader(catalinaLoader);
@@ -437,6 +437,7 @@ public final class Bootstrap {
      * @param await <code>true</code> if the daemon should block
      * @throws Exception Reflection error
      */
+    // setAwait方法用于设置Server启动完成后是否进入等待状态的标志，如果为true则进入，否则不进入。
     public void setAwait(boolean await)
         throws Exception {
 
@@ -487,8 +488,16 @@ public final class Bootstrap {
         synchronized (daemonLock) {
             if (daemon == null) {
                 // Don't set daemon until init() has completed
+                // 在init（）完成之前不要设置守护进程
+                // 创建一个Bootstrap对象
                 Bootstrap bootstrap = new Bootstrap();
                 try {
+                    //调用初始化方法
+                    // 初始化ClassLoader:
+                    //      ClassLoader commonLoader = null;
+                    //      ClassLoader catalinaLoader = null; 绑定到当前线程上
+                    //      ClassLoader sharedLoader = null;
+                    // catalinaLoader类加载器创建Catalina实例，赋值给catalinaDaemon
                     bootstrap.init(); // 初始化类加载器，创建Catalina
                 } catch (Throwable t) {
                     handleThrowable(t);
@@ -518,8 +527,11 @@ public final class Bootstrap {
                 args[args.length - 1] = "stop";
                 daemon.stop();
             } else if (command.equals("start")) {
+                // 执行这个位置，【让主线程不退出】
                 daemon.setAwait(true);
+                // 反射调用 catalinaDaemon#load 方法，根据server.xml 创建服务
                 daemon.load(args);
+                // 反射调用 catalinaDaemon#start 方法，启动服务
                 daemon.start();
                 if (null == daemon.getServer()) {
                     System.exit(1);
